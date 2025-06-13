@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844581999921",
+    "project_id": "yugioh-deck-builder-naka",
+    "storage_bucket": "yugioh-deck-builder-naka.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844581999921:android:934542029a45d675d80c10",
+        "android_client_info": {
+          "package_name": "com.example.yugiohdeckbuilder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH02kB045-cyiAT7tou6R0Lwjm2laWQOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

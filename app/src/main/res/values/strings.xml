@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">YGO Deck Builder</string>
+
+    <!-- Tela de Login -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="auth_failed">Authentication failed.</string>
+    <string name="reg_success">Registration successful.</string>
+    <string name="reg_failed">Registration failed.</string>
+
+    <!-- Tela do Deck -->
+    <string name="add_new_card">Add new card</string>
+    <string name="deck_card_image_desc">Deck Card</string>
+
+    <!-- Tela de Busca -->
+    <string name="add">Add</string>
+    <string name="card_added_success">Card added successfully!</string>
+    <string name="card_add_failed">Failed to add card.</string>
+    <string name="search_card_image_desc">Search result card art</string>
+    <string name="card_list">Card list</string>
+    <string name="card_details">Card details</string>
+
+    <!-- Tela de Perfil -->
+    <string name="profile">Profile</string>
+    <string name="profile_image_desc">User profile picture</string>
+    <string name="deck_summary_format">Deck Summary: %d cards</string>
+    <string name="logout">Logout</string>
+
+    <!-- Tipos de Carta (para Spinner e API) -->
+    <string-array name="card_types">
+        <item>Effect Monster</item>
+        <item>Flip Effect Monster</item>
+        <item>Fusion Monster</item>
+        <item>Link Monster</item>
+        <item>Normal Monster</item>
+        <item>Pendulum Effect Monster</item>
+        <item>Ritual Effect Monster</item>
+        <item>Spell Card</item>
+        <item>Synchro Monster</item>
+        <item>Trap Card</item>
+        <item>XYZ Monster</item>
+    </string-array>
+</resources>

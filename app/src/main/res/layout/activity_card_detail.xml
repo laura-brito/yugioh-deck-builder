@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CardDetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/image_view_detail_card"
+            android:layout_width="240dp"
+            android:layout_height="350dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Imagem da carta em detalhe" />
+
+        <TextView
+            android:id="@+id/text_view_detail_card_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:text="Blue-Eyes White Dragon" />
+
+        <TextView
+            android:id="@+id/text_view_detail_card_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="16sp"
+            tools:text="[ Normal Monster ]" />
+
+        <TextView
+            android:id="@+id/text_view_detail_card_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="#F1F1F1"
+            android:padding="8dp"
+            android:textSize="14sp"
+            tools:text="This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale." />
+
+        <Button
+            android:id="@+id/button_add_remove_deck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            tools:text="Adicionar ao Deck" />
+
+    </LinearLayout>
+</ScrollView>
