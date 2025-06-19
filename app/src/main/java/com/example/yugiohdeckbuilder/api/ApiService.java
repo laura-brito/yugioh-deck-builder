@@ -8,9 +8,12 @@ public interface ApiService {
     @GET("api/v7/cardinfo.php")
     Call<ApiResponse> getCardsByLanguage(
             @Query("type") String cardType,
-            @Query("language") String lang
+            @Query("language") String lang,
+            @Query("fname") String fname
     );
 
     @GET("api/v7/cardinfo.php")
-    Call<ApiResponse> getCardsInEnglish(@Query("type") String cardType);
+    Call<ApiResponse> getCardsInEnglish(@Query("type") String cardType,
+                                        @Query("fname") String fname
+    );
 }

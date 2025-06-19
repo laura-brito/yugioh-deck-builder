@@ -5,7 +5,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,10 +21,14 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.example.yugiohdeckbuilder.model.LanguageItem;
+import com.example.yugiohdeckbuilder.util.LocaleHelper;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.Manifest;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends BaseActivity {
 
@@ -30,6 +38,9 @@ public class ProfileActivity extends BaseActivity {
 
     private ImageView profileImageView;
     private TextView deckSummaryTextView;
+    private Spinner languageSpinner;
+    private List<LanguageItem> languageList;
+    private boolean isUserAction = false;
 
     private FirebaseFirestore db;
     private SharedPreferences sharedPreferences;
@@ -63,6 +74,7 @@ public class ProfileActivity extends BaseActivity {
             }
     );
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,11 +89,50 @@ public class ProfileActivity extends BaseActivity {
 
         profileImageView = findViewById(R.id.image_view_profile);
         deckSummaryTextView = findViewById(R.id.text_view_deck_summary);
+        languageSpinner = findViewById(R.id.spinner_language);
 
         profileImageView.setOnClickListener(v -> showImageSourceDialog());
 
+        initLanguageList();
+        setupLanguageSpinner();
         loadProfileData();
     }
+
+    private void initLanguageList() {
+        languageList = new ArrayList<>();
+        languageList.add(new LanguageItem("English", "en", R.drawable.ic_flag_us));
+        languageList.add(new LanguageItem("Português", "pt", R.drawable.ic_flag_br));
+    }
+
+    private void setupLanguageSpinner() {
+        LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(this, languageList);
+        languageSpinner.setAdapter(adapter);
+
+        String currentLangCode = LocaleHelper.getLanguage(this);
+        for (int i = 0; i < languageList.size(); i++) {
+            if (languageList.get(i).getLanguageCode().equals(currentLangCode)) {
+                languageSpinner.setSelection(i, false); // false para não disparar onItemSelected
+                break;
+            }
+        }
+
+        languageSpinner.post(() -> languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LanguageItem selectedLanguage = (LanguageItem) parent.getItemAtPosition(position);
+                String selectedLangCode = selectedLanguage.getLanguageCode();
+
+                if (!LocaleHelper.getLanguage(ProfileActivity.this).equals(selectedLangCode)) {
+                    LocaleHelper.setLocale(ProfileActivity.this, selectedLangCode);
+                    recreate();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        }));
+    }
+
 
     private void showImageSourceDialog() {
         String[] options = {"Tirar Foto", "Escolher da Galeria"};

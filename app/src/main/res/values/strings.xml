@@ -42,4 +42,10 @@
         <item>Trap Card</item>
         <item>XYZ Monster</item>
     </string-array>
+
+    <string name="language_selection_title">Language</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Portuguese</item>
+    </string-array>
 </resources>
