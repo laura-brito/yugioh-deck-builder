@@ -10,13 +10,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.yugiohdeckbuilder.model.Card;
 import com.example.yugiohdeckbuilder.util.LocaleHelper;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +29,7 @@ public class DeckActivity extends BaseActivity {
 
     private RecyclerView recyclerViewDeck;
     private DeckAdapter deckAdapter;
-    private List<Card> deckList;
+    private List<Object> combinedList;
     private FirebaseFirestore db;
     private View emptyDeckView;
     private final String LOCAL_USER_ID = "localUser";
@@ -35,52 +40,71 @@ public class DeckActivity extends BaseActivity {
         setContentView(R.layout.activity_deck);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setLogo(R.drawable.yugioh_logo);
+            getSupportActionBar().setLogo(R.drawable.logo);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
-            getSupportActionBar().setTitle(""); // Remove o texto do título
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         db = FirebaseFirestore.getInstance();
-
         recyclerViewDeck = findViewById(R.id.recycler_view_deck);
         emptyDeckView = findViewById(R.id.empty_deck_view);
         FloatingActionButton fab = findViewById(R.id.fab_add_card);
 
-        deckList = new ArrayList<>();
-        deckAdapter = new DeckAdapter(this, deckList);
+        combinedList = new ArrayList<>();
+        deckAdapter = new DeckAdapter(this, combinedList);
 
-        recyclerViewDeck.setLayoutManager(new GridLayoutManager(this, 3));
-        recyclerViewDeck.setAdapter(deckAdapter);
-
-        fab.setOnClickListener(v -> {
-            startActivity(new Intent(DeckActivity.this, CardListActivity.class));
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return deckAdapter.getItemViewType(position) == 0 ? 3 : 1;
+            }
         });
+
+        recyclerViewDeck.setLayoutManager(layoutManager);
+        recyclerViewDeck.setAdapter(deckAdapter);
+        fab.setOnClickListener(v -> startActivity(new Intent(DeckActivity.this, CardListActivity.class)));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadDeck();
+        loadAllDecks();
     }
 
-    private void loadDeck() {
-        db.collection("users").document(LOCAL_USER_ID).collection("deck")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        deckList.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            deckList.add(document.toObject(Card.class));
-                        }
-                        toggleEmptyState();
-                        deckAdapter.notifyDataSetChanged();
-                    }
-                });
+    private void loadAllDecks() {
+        Task<QuerySnapshot> mainDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("mainDeck").get();
+        Task<QuerySnapshot> extraDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("extraDeck").get();
+        Task<QuerySnapshot> sideDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("sideDeck").get();
+
+        Tasks.whenAllSuccess(mainDeckTask, extraDeckTask, sideDeckTask).addOnSuccessListener(results -> {
+            combinedList.clear();
+
+            List<Card> mainDeckCards = ((QuerySnapshot) results.get(0)).toObjects(Card.class);
+            List<Card> extraDeckCards = ((QuerySnapshot) results.get(1)).toObjects(Card.class);
+            List<Card> sideDeckCards = ((QuerySnapshot) results.get(2)).toObjects(Card.class);
+
+            if (!mainDeckCards.isEmpty()) {
+                combinedList.add("Main Deck (" + mainDeckCards.size() + ")");
+                combinedList.addAll(mainDeckCards);
+            }
+            if (!extraDeckCards.isEmpty()) {
+                combinedList.add("Extra Deck (" + extraDeckCards.size() + ")");
+                combinedList.addAll(extraDeckCards);
+            }
+            if (!sideDeckCards.isEmpty()) {
+                combinedList.add("Side Deck (" + sideDeckCards.size() + ")");
+                combinedList.addAll(sideDeckCards);
+            }
+
+            toggleEmptyState();
+            deckAdapter.notifyDataSetChanged();
+        });
     }
 
     private void toggleEmptyState() {
-        if (deckList.isEmpty()) {
+        if (combinedList.isEmpty()) {
             recyclerViewDeck.setVisibility(View.GONE);
             emptyDeckView.setVisibility(View.VISIBLE);
             TextView emptyText = emptyDeckView.findViewById(R.id.text_view_empty_state);

@@ -1,0 +1,12 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text_view_header_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="24dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
+    android:text="@string/deck_header"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:textColor="?android:attr/textColor" />

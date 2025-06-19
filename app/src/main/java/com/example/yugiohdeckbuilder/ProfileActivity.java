@@ -23,7 +23,11 @@ import androidx.core.content.FileProvider;
 import com.bumptech.glide.Glide;
 import com.example.yugiohdeckbuilder.model.LanguageItem;
 import com.example.yugiohdeckbuilder.util.LocaleHelper;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import android.Manifest;
 
 import java.io.File;
@@ -188,14 +192,18 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void loadDeckSummary() {
-        db.collection("users").document(LOCAL_USER_ID).collection("deck")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        int deckSize = task.getResult().size();
-                        deckSummaryTextView.setText(getString(R.string.deck_summary_format, deckSize));
-                    }
-                });
+        Task<QuerySnapshot> mainDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("mainDeck").get();
+        Task<QuerySnapshot> extraDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("extraDeck").get();
+        Task<QuerySnapshot> sideDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("sideDeck").get();
+
+        Tasks.whenAllSuccess(mainDeckTask, extraDeckTask, sideDeckTask).addOnSuccessListener(results -> {
+            int mainSize = ((QuerySnapshot) results.get(0)).size();
+            int extraSize = ((QuerySnapshot) results.get(1)).size();
+            int sideSize = ((QuerySnapshot) results.get(2)).size();
+            int totalSize = mainSize + extraSize + sideSize;
+
+            deckSummaryTextView.setText(getString(R.string.deck_summary_format, totalSize));
+        });
     }
 
     @Override

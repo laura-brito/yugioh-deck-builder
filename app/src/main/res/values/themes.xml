@@ -1,9 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.YuGiOhDeckBuilder" parent="Theme.Material3.DayNight">
-        <!-- Você pode customizar seu tema aqui. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/purple_primary</item>
+        <item name="colorSecondary">@color/pink_secondary</item>
+        <item name="android:textColor">@color/blue_text_main</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="actionBarStyle">@style/CustomActionBarTheme</item>
     </style>
 
     <style name="Theme.YuGiOhDeckBuilder" parent="Base.Theme.YuGiOhDeckBuilder" />
+
+    <style name="CustomActionBarTheme" parent="@style/Widget.Material3.ActionBar.Solid">
+        <item name="background">@color/purple_primary</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+    </style>
+
+    <!-- Tema para a Splash Screen -->
+    <style name="Theme.YuGiOhDeckBuilder.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
 </resources>

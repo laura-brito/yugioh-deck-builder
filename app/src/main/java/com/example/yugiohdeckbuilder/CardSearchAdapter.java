@@ -11,22 +11,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.yugiohdeckbuilder.model.Card;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.CardSearchViewHolder> {
 
     private final Context context;
     private final List<Card> cardList;
+    private final Set<Integer> deckCardIds; // <-- NOVO
     private final FirebaseFirestore db;
     private final String LOCAL_USER_ID = "localUser";
+    private final List<String> EXTRA_DECK_TYPES = Arrays.asList(
+            "Fusion Monster", "Link Monster", "Pendulum Effect Fusion Monster",
+            "Synchro Monster", "Synchro Pendulum Effect Monster", "Synchro Tuner Monster",
+            "XYZ Monster", "XYZ Pendulum Effect Monster"
+    );
 
-    public CardSearchAdapter(Context context, List<Card> cardList) {
+    public CardSearchAdapter(Context context, List<Card> cardList, Set<Integer> deckCardIds) {
         this.context = context;
         this.cardList = cardList;
+        this.deckCardIds = deckCardIds; // <-- NOVO
         this.db = FirebaseFirestore.getInstance();
     }
 
@@ -40,6 +53,7 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
     @Override
     public void onBindViewHolder(@NonNull CardSearchViewHolder holder, int position) {
         Card card = cardList.get(position);
+
         holder.cardNameTextView.setText(card.getName());
 
         if (card.getCardImages() != null && !card.getCardImages().isEmpty()) {
@@ -49,23 +63,76 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
                     .into(holder.cardImageView);
         }
 
+        // --- LÓGICA DO BOTÃO CONDICIONAL ---
+        if (deckCardIds.contains(card.getId())) {
+            holder.addButton.setText("No Deck");
+            holder.addButton.setEnabled(false);
+        } else {
+            holder.addButton.setText(R.string.add);
+            holder.addButton.setEnabled(true);
+            holder.addButton.setOnClickListener(v -> showDeckSelectionDialog(card, position));
+        }
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, CardDetailActivity.class);
             intent.putExtra("CARD_DATA", card);
             context.startActivity(intent);
         });
-
-        // O botão de "Add" rápido pode ser mantido ou removido, dependendo da sua preferência.
-        // Vamos mantê-lo por conveniência.
-        holder.addButton.setOnClickListener(v -> addCardToDeck(card));
     }
 
-    private void addCardToDeck(Card card) {
-        db.collection("users").document(LOCAL_USER_ID)
-                .collection("deck").document(String.valueOf(card.getId()))
-                .set(card)
-                .addOnSuccessListener(aVoid -> Toast.makeText(context, R.string.card_added_success, Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(context, R.string.card_add_failed, Toast.LENGTH_SHORT).show());
+    private void showDeckSelectionDialog(Card card, int position) {
+        List<String> options = new ArrayList<>();
+        if (EXTRA_DECK_TYPES.contains(card.getType())) {
+            options.add("Extra Deck");
+        } else {
+            options.add("Main Deck");
+        }
+        options.add("Side Deck");
+
+        new AlertDialog.Builder(context)
+                .setTitle("Adicionar em qual Deck?")
+                .setItems(options.toArray(new String[0]), (dialog, which) -> {
+                    String selectedOption = options.get(which);
+                    String deckCollection;
+                    if (selectedOption.equals("Main Deck")) deckCollection = "mainDeck";
+                    else if (selectedOption.equals("Extra Deck")) deckCollection = "extraDeck";
+                    else deckCollection = "sideDeck";
+
+                    checkLimitAndAddToDeck(deckCollection, card, position);
+                })
+                .show();
+    }
+
+    private void checkLimitAndAddToDeck(String deckCollection, Card card, int position) {
+        CollectionReference deckRef = db.collection("users").document(LOCAL_USER_ID).collection(deckCollection);
+        int limit = getDeckLimit(deckCollection);
+
+        deckRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (queryDocumentSnapshots.size() >= limit) {
+                Toast.makeText(context, "Limite do " + deckCollection + " (" + limit + " cartas) atingido!", Toast.LENGTH_LONG).show();
+            } else {
+                addToDeck(deckRef, card, position);
+            }
+        });
+    }
+
+    private int getDeckLimit(String deckCollection) {
+        switch (deckCollection) {
+            case "mainDeck": return 60;
+            case "extraDeck":
+            case "sideDeck": return 15;
+            default: return 0;
+        }
+    }
+
+    private void addToDeck(CollectionReference deckRef, Card card, int position) {
+        deckRef.document(String.valueOf(card.getId())).set(card)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(context, "Carta adicionada!", Toast.LENGTH_SHORT).show();
+                    // Atualiza o conjunto de IDs e notifica o adapter para redesenhar este item
+                    deckCardIds.add(card.getId());
+                    notifyItemChanged(position);
+                });
     }
 
     @Override

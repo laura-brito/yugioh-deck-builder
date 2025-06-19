@@ -44,6 +44,7 @@
     </string-array>
 
     <string name="language_selection_title">Language</string>
+    <string name="deck_header">Deck Header</string>
     <string-array name="languages">
         <item>English</item>
         <item>Portuguese</item>

@@ -30,6 +30,6 @@
             android:id="@+id/button_add_to_deck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add"/>
+            android:text="@string/add"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

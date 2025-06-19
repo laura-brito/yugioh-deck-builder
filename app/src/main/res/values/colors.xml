@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="purple_primary">#580069</color>
+    <color name="pink_secondary">#9a0056</color>
+    <color name="gold_accent">#ffc100</color>
+    <color name="blue_text_main">#11007e</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="light_gray_background">#F1F1F1</color>
+    <color name="dark_gray_background">#333333</color>
+    <color name="splash_background">#ffc100</color>
+
 </resources>

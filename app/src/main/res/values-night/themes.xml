@@ -1,7 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.YuGiOhDeckBuilder" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Base application theme for dark mode. -->
+    <style name="Base.Theme.YuGiOhDeckBuilder" parent="Theme.Material3.DayNight">
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/purple_primary</item>
+        <item name="colorSecondary">@color/pink_secondary</item>
+
+        <!-- Cor de Texto -->
+        <item name="android:textColor">@color/blue_text_main</item> <!-- Agora aponta para a cor branca -->
+
+        <!-- Cor da Barra de Status -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+
+        <!-- Estilo da ActionBar -->
+        <item name="actionBarStyle">@style/CustomActionBarTheme</item>
     </style>
 </resources>
