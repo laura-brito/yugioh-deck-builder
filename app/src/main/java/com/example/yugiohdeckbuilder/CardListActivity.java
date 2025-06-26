@@ -15,8 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +47,8 @@ import retrofit2.Response;
 public class CardListActivity extends BaseActivity {
 
     private SearchView searchView;
-    private Spinner spinnerCardType;
+    private CardView typeSelectorCardView;
+    private TextView selectedTypeTextView;
     private RecyclerView recyclerViewCardSearch;
     private CardSearchAdapter cardSearchAdapter;
     private List<Card> cardList;
@@ -71,7 +74,8 @@ public class CardListActivity extends BaseActivity {
 
         db = FirebaseFirestore.getInstance();
         searchView = findViewById(R.id.search_view_cards);
-        spinnerCardType = findViewById(R.id.spinner_card_type);
+        typeSelectorCardView = findViewById(R.id.card_view_type_selector);
+        selectedTypeTextView = findViewById(R.id.text_view_selected_type);
         recyclerViewCardSearch = findViewById(R.id.recycler_view_card_search);
         emptySearchView = findViewById(R.id.empty_search_view);
         progressBar = findViewById(R.id.progress_bar_search);
@@ -82,6 +86,11 @@ public class CardListActivity extends BaseActivity {
     }
 
     private void loadDeckCardIdsAndSetupUI() {
+        // Mostra o loading enquanto os IDs são carregados
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerViewCardSearch.setVisibility(View.GONE);
+        emptySearchView.setVisibility(View.GONE);
+
         Task<QuerySnapshot> mainDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("mainDeck").get();
         Task<QuerySnapshot> extraDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("extraDeck").get();
         Task<QuerySnapshot> sideDeckTask = db.collection("users").document(LOCAL_USER_ID).collection("sideDeck").get();
@@ -94,6 +103,7 @@ public class CardListActivity extends BaseActivity {
                     deckCardIds.add(card.getId());
                 }
             }
+            // Apenas após carregar os IDs, configure o adapter e os listeners
             setupAdapterAndListeners();
         });
     }
@@ -102,18 +112,20 @@ public class CardListActivity extends BaseActivity {
         cardSearchAdapter = new CardSearchAdapter(this, cardList, deckCardIds);
         recyclerViewCardSearch.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCardSearch.setAdapter(cardSearchAdapter);
-        setupSearchView();
-        setupSpinner();
-    }
 
+        setupSearchView();
+        setupTypeSelector();
+
+        // Inicia a primeira busca com valores padrão
+        fetchCards(selectedTypeTextView.getText().toString(), searchView.getQuery().toString());
+    }
 
     private void setupSearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 debounceHandler.removeCallbacks(debounceRunnable);
-                String selectedType = (String) spinnerCardType.getSelectedItem();
-                fetchCards(selectedType, query);
+                fetchCards(selectedTypeTextView.getText().toString(), query);
                 searchView.clearFocus();
                 return true;
             }
@@ -121,32 +133,25 @@ public class CardListActivity extends BaseActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 debounceHandler.removeCallbacks(debounceRunnable);
-                debounceRunnable = () -> {
-                    String selectedType = (String) spinnerCardType.getSelectedItem();
-                    fetchCards(selectedType, newText);
-                };
+                debounceRunnable = () -> fetchCards(selectedTypeTextView.getText().toString(), newText);
                 debounceHandler.postDelayed(debounceRunnable, DEBOUNCE_DELAY_MS);
                 return true;
             }
         });
     }
 
-    private void setupSpinner() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.card_types, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCardType.setAdapter(adapter);
-
-        spinnerCardType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                debounceHandler.removeCallbacks(debounceRunnable);
-                String selectedType = parent.getItemAtPosition(position).toString();
-                String currentQuery = searchView.getQuery().toString();
-                fetchCards(selectedType, currentQuery);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+    private void setupTypeSelector() {
+        typeSelectorCardView.setOnClickListener(v -> {
+            final String[] cardTypes = getResources().getStringArray(R.array.card_types);
+            new AlertDialog.Builder(this)
+                    .setTitle("Selecione o Tipo")
+                    .setItems(cardTypes, (dialog, which) -> {
+                        String selectedType = cardTypes[which];
+                        selectedTypeTextView.setText(selectedType);
+                        String currentQuery = searchView.getQuery().toString();
+                        fetchCards(selectedType, currentQuery);
+                    })
+                    .show();
         });
     }
 

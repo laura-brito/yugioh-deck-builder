@@ -17,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -42,9 +43,10 @@ public class ProfileActivity extends BaseActivity {
 
     private ImageView profileImageView;
     private TextView deckSummaryTextView;
-    private Spinner languageSpinner;
+    private CardView languageSelectorCardView;
+    private ImageView selectedFlagImageView;
+    private TextView selectedLanguageTextView;
     private List<LanguageItem> languageList;
-    private boolean isUserAction = false;
 
     private FirebaseFirestore db;
     private SharedPreferences sharedPreferences;
@@ -78,7 +80,6 @@ public class ProfileActivity extends BaseActivity {
             }
     );
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,14 +92,19 @@ public class ProfileActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
+        // Inicialização das Views
         profileImageView = findViewById(R.id.image_view_profile);
         deckSummaryTextView = findViewById(R.id.text_view_deck_summary);
-        languageSpinner = findViewById(R.id.spinner_language);
+        languageSelectorCardView = findViewById(R.id.card_view_language_selector);
+        selectedFlagImageView = findViewById(R.id.image_view_selected_flag);
+        selectedLanguageTextView = findViewById(R.id.text_view_selected_language);
 
         profileImageView.setOnClickListener(v -> showImageSourceDialog());
 
         initLanguageList();
-        setupLanguageSpinner();
+        updateLanguageSelectorUI();
+        languageSelectorCardView.setOnClickListener(v -> showLanguageSelectionDialog());
+
         loadProfileData();
     }
 
@@ -108,33 +114,30 @@ public class ProfileActivity extends BaseActivity {
         languageList.add(new LanguageItem("Português", "pt", R.drawable.ic_flag_br));
     }
 
-    private void setupLanguageSpinner() {
-        LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(this, languageList);
-        languageSpinner.setAdapter(adapter);
-
+    private void updateLanguageSelectorUI() {
         String currentLangCode = LocaleHelper.getLanguage(this);
-        for (int i = 0; i < languageList.size(); i++) {
-            if (languageList.get(i).getLanguageCode().equals(currentLangCode)) {
-                languageSpinner.setSelection(i, false); // false para não disparar onItemSelected
+        for (LanguageItem item : languageList) {
+            if (item.getLanguageCode().equals(currentLangCode)) {
+                selectedFlagImageView.setImageResource(item.getFlagImage());
+                selectedLanguageTextView.setText(item.getLanguageName());
                 break;
             }
         }
+    }
 
-        languageSpinner.post(() -> languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                LanguageItem selectedLanguage = (LanguageItem) parent.getItemAtPosition(position);
-                String selectedLangCode = selectedLanguage.getLanguageCode();
-
-                if (!LocaleHelper.getLanguage(ProfileActivity.this).equals(selectedLangCode)) {
-                    LocaleHelper.setLocale(ProfileActivity.this, selectedLangCode);
-                    recreate();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        }));
+    private void showLanguageSelectionDialog() {
+        LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(this, languageList);
+        new AlertDialog.Builder(this)
+                .setTitle("Selecione o Idioma")
+                .setAdapter(adapter, (dialog, which) -> {
+                    LanguageItem selectedLanguage = languageList.get(which);
+                    String selectedLangCode = selectedLanguage.getLanguageCode();
+                    if (!LocaleHelper.getLanguage(ProfileActivity.this).equals(selectedLangCode)) {
+                        LocaleHelper.setLocale(ProfileActivity.this, selectedLangCode);
+                        recreate(); // Reinicia a activity para aplicar a mudança
+                    }
+                })
+                .show();
     }
 
 

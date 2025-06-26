@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,16 +10,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/image_view_detail_card"
             android:layout_width="240dp"
             android:layout_height="350dp"
-            android:scaleType="fitCenter"
-            android:contentDescription="Imagem da carta em detalhe" />
+            android:contentDescription="Imagem da carta em detalhe"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/text_view_detail_card_name"
@@ -37,15 +37,25 @@
             android:textSize="16sp"
             tools:text="[ Normal Monster ]" />
 
-        <TextView
-            android:id="@+id/text_view_detail_card_desc"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@color/light_gray_background"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            tools:text="This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale." />
+            app:cardBackgroundColor="@color/light_gray_background"
+            app:cardCornerRadius="8dp"
+            android:paddingTop="6dp"
+            app:cardElevation="2dp">
+
+            <TextView
+                android:id="@+id/text_view_detail_card_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
+                android:padding="16dp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                tools:text="This legendary dragon is a powerful engine of destruction. Virtually invincible, very few have faced this awesome creature and lived to tell the tale." />
+
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/button_add_remove_deck"

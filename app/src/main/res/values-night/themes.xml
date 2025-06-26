@@ -1,17 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme for dark mode. -->
+    <!-- Tema base para o modo escuro -->
     <style name="Base.Theme.YuGiOhDeckBuilder" parent="Theme.Material3.DayNight">
-        <!-- Cores Primárias -->
         <item name="colorPrimary">@color/purple_primary</item>
         <item name="colorSecondary">@color/pink_secondary</item>
-
-        <!-- Cor de Texto -->
-        <item name="android:textColor">@color/blue_text_main</item> <!-- Agora aponta para a cor branca -->
-
-        <!-- Cor da Barra de Status -->
+        <item name="android:textColor">@color/blue_text_main</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
-
-        <!-- Estilo da ActionBar -->
         <item name="actionBarStyle">@style/CustomActionBarTheme</item>
+        <item name="alertDialogTheme">@style/CustomAlertDialogTheme.Dark</item>
+    </style>
+
+    <!-- Estilo para os diálogos em modo escuro -->
+    <style name="CustomAlertDialogTheme.Dark" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/DialogTitleTextStyle.Dark</item>
+    </style>
+
+    <style name="DialogTitleTextStyle.Dark" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/white</item>
     </style>
 </resources>
