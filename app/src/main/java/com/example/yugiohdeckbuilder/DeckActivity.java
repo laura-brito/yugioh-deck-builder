@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -40,10 +41,9 @@ public class DeckActivity extends BaseActivity {
         setContentView(R.layout.activity_deck);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setLogo(R.drawable.logo);
-            getSupportActionBar().setDisplayUseLogoEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            // Habilita a view customizada e desabilita o título padrão
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            getSupportActionBar().setCustomView(R.layout.action_bar_custom_logo);
         }
 
         db = FirebaseFirestore.getInstance();

@@ -17,24 +17,45 @@
             android:id="@+id/search_view_cards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F6F0F0"
+            android:background="?android:attr/colorBackground"
             app:iconifiedByDefault="false"
             app:queryHint="Procurar por nome..." />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/card_view_type_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp">
 
-        <Spinner
-            android:id="@+id/spinner_card_type"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F6F0F0"
-            android:padding="8dp"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="?android:attr/colorBackground"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/text_view_selected_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Effect Monster"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_drop_down"
+                android:contentDescription="Selecionar tipo de carta"/>
+
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <RelativeLayout
@@ -48,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:indeterminateTint="@color/gold_accent"
+            android:indeterminateTint="@color/purple_primary"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
