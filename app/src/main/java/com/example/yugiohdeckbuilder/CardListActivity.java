@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,8 +50,8 @@ public class CardListActivity extends BaseActivity {
     private CardSearchAdapter cardSearchAdapter;
     private List<Card> cardList;
     private View emptySearchView;
+    private ProgressBar progressBar;
 
-    // --- LÓGICA DE DECK ---
     private FirebaseFirestore db;
     private Set<Integer> deckCardIds = new HashSet<>();
     private final String LOCAL_USER_ID = "localUser";
@@ -73,6 +74,7 @@ public class CardListActivity extends BaseActivity {
         spinnerCardType = findViewById(R.id.spinner_card_type);
         recyclerViewCardSearch = findViewById(R.id.recycler_view_card_search);
         emptySearchView = findViewById(R.id.empty_search_view);
+        progressBar = findViewById(R.id.progress_bar_search);
 
         cardList = new ArrayList<>();
 
@@ -92,7 +94,6 @@ public class CardListActivity extends BaseActivity {
                     deckCardIds.add(card.getId());
                 }
             }
-            // Apenas após carregar os IDs, configure o adapter e os listeners
             setupAdapterAndListeners();
         });
     }
@@ -150,6 +151,11 @@ public class CardListActivity extends BaseActivity {
     }
 
     private void fetchCards(String type, String fname) {
+        // Mostra o loading
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerViewCardSearch.setVisibility(View.GONE);
+        emptySearchView.setVisibility(View.GONE);
+
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<ApiResponse> call;
 
@@ -163,6 +169,7 @@ public class CardListActivity extends BaseActivity {
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                progressBar.setVisibility(View.GONE); // Esconde o loading
                 cardList.clear();
                 boolean hasData = response.isSuccessful() && response.body() != null && response.body().getData() != null;
 
@@ -176,6 +183,7 @@ public class CardListActivity extends BaseActivity {
 
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                progressBar.setVisibility(View.GONE); // Esconde o loading
                 cardList.clear();
                 toggleEmptySearchState(false);
                 cardSearchAdapter.notifyDataSetChanged();
@@ -205,4 +213,3 @@ public class CardListActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
