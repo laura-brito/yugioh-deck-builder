@@ -1,34 +1,61 @@
 <resources>
     <string name="app_name">YGO Deck Builder</string>
 
-    <!-- Tela de Login -->
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
-    <string name="auth_failed">Authentication failed.</string>
-    <string name="reg_success">Registration successful.</string>
-    <string name="reg_failed">Registration failed.</string>
+    <!-- Descrições de Conteúdo para Acessibilidade -->
+    <string name="content_desc_splash_logo">Application Logo</string>
+    <string name="content_desc_deck_card">Deck Card Image</string>
+    <string name="content_desc_add_card_fab">Add new card</string>
+    <string name="content_desc_search_card_art">Card art from search</string>
+    <string name="content_desc_detail_card_art">Detailed card image</string>
+    <string name="content_desc_profile_image">User profile picture</string>
+    <string name="content_desc_select_card_type">Select card type</string>
 
-    <!-- Tela do Deck -->
-    <string name="add_new_card">Add new card</string>
-    <string name="deck_card_image_desc">Deck Card</string>
-
-    <!-- Tela de Busca -->
+    <!-- Textos Gerais -->
     <string name="add">Add</string>
-    <string name="card_added_success">Card added successfully!</string>
-    <string name="card_add_failed">Failed to add card.</string>
-    <string name="search_card_image_desc">Search result card art</string>
-    <string name="card_list">Card list</string>
-    <string name="card_details">Card details</string>
-
-    <!-- Tela de Perfil -->
+    <string name="search_hint">Search by name…</string>
     <string name="profile">Profile</string>
-    <string name="profile_image_desc">User profile picture</string>
-    <string name="deck_summary_format">Deck Summary: %d cards</string>
-    <string name="logout">Logout</string>
+    <string name="description">Description</string>
+    <string name="language_selection_title">Language</string>
 
-    <!-- Tipos de Carta (para Spinner e API) -->
+    <!-- Mensagens e Alertas -->
+    <string name="empty_deck_message">Your deck is empty!\nTap the \'+\' to add cards.</string>
+    <string name="empty_search_message">No cards found.</string>
+    <string name="deck_summary_format">%d cards</string>
+    <string name="card_added_success">Card added!</string>
+    <string name="card_removed_success">Card removed!</string>
+    <string name="add_to_deck_title">Add to which deck?</string>
+    <string name="deck_limit_reached">Deck limit (%1$d cards) reached for %2$s!</string>
+    <string name="network_error">Network error: %s</string>
+    <string name="fetch_error">Failed to fetch cards. Code: %d</string>
+    <string name="load_card_error">Error loading card data.</string>
+    <string name="camera_permission_denied">Camera permission denied.</string>
+    <string name="image_source_dialog_title">Choose an image</string>
+    <string name="dialog_option_camera">Take Photo</string>
+    <string name="dialog_option_gallery">Choose from Gallery</string>
+    <string name="select_type_dialog_title">Select Type</string>
+
+    <!-- Botões -->
+    <string name="add_to_deck_button">Add to Deck</string>
+    <string name="remove_from_deck_button">Remove from %s</string>
+    <string name="in_deck_button">In Deck</string>
+
+    <!-- Nomes de Decks -->
+    <string name="main_deck">Main Deck</string>
+    <string name="extra_deck">Extra Deck</string>
+    <string name="side_deck">Side Deck</string>
+    <string name="deck_header_format">%1$s (%2$d)</string>
+    <string name="card_list">Cards</string>
+    <string name="card_details">Details</string>
+    <string name="add_new_card">Add</string>
+    <string name="profile_image_desc">Description</string>
+    <string name="deck_header">header</string>
+
+    <!-- Nomes de Idiomas -->
+    <string name="language_english">English</string>
+    <string name="language_portuguese">Portuguese</string>
+
+
+    <!-- Arrays -->
     <string-array name="card_types">
         <item>Effect Monster</item>
         <item>Flip Effect Monster</item>
@@ -41,12 +68,5 @@
         <item>Synchro Monster</item>
         <item>Trap Card</item>
         <item>XYZ Monster</item>
-    </string-array>
-
-    <string name="language_selection_title">Language</string>
-    <string name="deck_header">Deck Header</string>
-    <string-array name="languages">
-        <item>English</item>
-        <item>Portuguese</item>
     </string-array>
 </resources>

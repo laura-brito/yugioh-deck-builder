@@ -1,0 +1,73 @@
+<resources>
+    <string name="app_name">YGO Deck Builder</string>
+
+    <!-- Descrições de Conteúdo para Acessibilidade -->
+    <string name="content_desc_splash_logo">Logo do Aplicativo</string>
+    <string name="content_desc_deck_card">Imagem da Carta do Deck</string>
+    <string name="content_desc_add_card_fab">Adicionar nova carta</string>
+    <string name="content_desc_search_card_art">Arte da carta da busca</string>
+    <string name="content_desc_detail_card_art">Imagem da carta em detalhe</string>
+    <string name="content_desc_profile_image">Foto de perfil do usuário</string>
+    <string name="content_desc_select_card_type">Selecionar tipo de carta</string>
+
+    <!-- Textos Gerais -->
+    <string name="add">Adicionar</string>
+    <string name="search_hint">Procurar por nome…</string>
+    <string name="profile">Perfil</string>
+    <string name="description">Descrição</string>
+    <string name="language_selection_title">Idioma</string>
+
+    <!-- Mensagens e Alertas -->
+    <string name="empty_deck_message">Seu deck está vazio!\nToque no \'+\' para adicionar cartas.</string>
+    <string name="empty_search_message">Nenhuma carta encontrada.</string>
+    <string name="deck_summary_format">%d cartas</string>
+    <string name="card_added_success">Carta adicionada!</string>
+    <string name="card_removed_success">Carta removida!</string>
+    <string name="add_to_deck_title">Adicionar em qual deck?</string>
+    <string name="deck_limit_reached">Limite do %2$s (%1$d cartas) atingido!</string>
+    <string name="network_error">Erro de rede: %s</string>
+    <string name="fetch_error">Falha ao buscar cartas. Código: %d</string>
+    <string name="load_card_error">Erro ao carregar dados da carta.</string>
+    <string name="camera_permission_denied">Permissão da câmera negada.</string>
+    <string name="image_source_dialog_title">Escolha uma imagem</string>
+    <string name="dialog_option_camera">Tirar Foto</string>
+    <string name="dialog_option_gallery">Escolher da Galeria</string>
+    <string name="select_type_dialog_title">Selecione o Tipo</string>
+
+    <!-- Botões -->
+    <string name="add_to_deck_button">Adicionar ao Deck</string>
+    <string name="remove_from_deck_button">Remover do %s</string>
+    <string name="in_deck_button">No Deck</string>
+
+    <!-- Nomes de Decks -->
+    <string name="main_deck">Deck Principal</string>
+    <string name="extra_deck">Deck Extra</string>
+    <string name="side_deck">Deck Auxiliar</string>
+    <string name="deck_header_format">%1$s (%2$d)</string>
+    <string name="card_list">Cartas</string>
+    <string name="card_details">Detalhes</string>
+    <string name="add_new_card">Adicionar</string>
+    <string name="profile_image_desc">Description</string>
+    <string name="deck_header">header</string>
+
+    <string name="language_english">Inglês</string>
+    <string name="language_portuguese">Português</string>
+
+
+
+    <!-- Arrays -->
+    <!-- Os tipos de carta são mantidos em inglês pois são usados para a chamada da API -->
+    <string-array name="card_types">
+        <item>Effect Monster</item>
+        <item>Flip Effect Monster</item>
+        <item>Fusion Monster</item>
+        <item>Link Monster</item>
+        <item>Normal Monster</item>
+        <item>Pendulum Effect Monster</item>
+        <item>Ritual Effect Monster</item>
+        <item>Spell Card</item>
+        <item>Synchro Monster</item>
+        <item>Trap Card</item>
+        <item>XYZ Monster</item>
+    </string-array>
+</resources>

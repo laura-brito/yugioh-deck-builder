@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class DeckActivity extends BaseActivity {
 
     private RecyclerView recyclerViewDeck;
@@ -41,7 +42,6 @@ public class DeckActivity extends BaseActivity {
         setContentView(R.layout.activity_deck);
 
         if (getSupportActionBar() != null) {
-            // Habilita a view customizada e desabilita o título padrão
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             getSupportActionBar().setCustomView(R.layout.action_bar_custom_logo);
         }
@@ -64,7 +64,7 @@ public class DeckActivity extends BaseActivity {
 
         recyclerViewDeck.setLayoutManager(layoutManager);
         recyclerViewDeck.setAdapter(deckAdapter);
-        fab.setOnClickListener(v -> startActivity(new Intent(DeckActivity.this, CardListActivity.class)));
+        fab.setOnClickListener(v -> startActivity(new Intent(this, CardListActivity.class)));
     }
 
     @Override
@@ -86,15 +86,18 @@ public class DeckActivity extends BaseActivity {
             List<Card> sideDeckCards = ((QuerySnapshot) results.get(2)).toObjects(Card.class);
 
             if (!mainDeckCards.isEmpty()) {
-                combinedList.add("Main Deck (" + mainDeckCards.size() + ")");
+                String header = getString(R.string.deck_header_format, getString(R.string.main_deck), mainDeckCards.size());
+                combinedList.add(header);
                 combinedList.addAll(mainDeckCards);
             }
             if (!extraDeckCards.isEmpty()) {
-                combinedList.add("Extra Deck (" + extraDeckCards.size() + ")");
+                String header = getString(R.string.deck_header_format, getString(R.string.extra_deck), extraDeckCards.size());
+                combinedList.add(header);
                 combinedList.addAll(extraDeckCards);
             }
             if (!sideDeckCards.isEmpty()) {
-                combinedList.add("Side Deck (" + sideDeckCards.size() + ")");
+                String header = getString(R.string.deck_header_format, getString(R.string.side_deck), sideDeckCards.size());
+                combinedList.add(header);
                 combinedList.addAll(sideDeckCards);
             }
 
@@ -108,7 +111,7 @@ public class DeckActivity extends BaseActivity {
             recyclerViewDeck.setVisibility(View.GONE);
             emptyDeckView.setVisibility(View.VISIBLE);
             TextView emptyText = emptyDeckView.findViewById(R.id.text_view_empty_state);
-            emptyText.setText("Seu deck está vazio!\nToque no '+' para adicionar cartas.");
+            emptyText.setText(R.string.empty_deck_message);
         } else {
             recyclerViewDeck.setVisibility(View.VISIBLE);
             emptyDeckView.setVisibility(View.GONE);

@@ -63,9 +63,8 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
                     .into(holder.cardImageView);
         }
 
-        // --- LÓGICA DO BOTÃO CONDICIONAL ---
         if (deckCardIds.contains(card.getId())) {
-            holder.addButton.setText("No Deck");
+            holder.addButton.setText(R.string.in_deck_button);
             holder.addButton.setEnabled(false);
         } else {
             holder.addButton.setText(R.string.add);
@@ -83,19 +82,19 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
     private void showDeckSelectionDialog(Card card, int position) {
         List<String> options = new ArrayList<>();
         if (EXTRA_DECK_TYPES.contains(card.getType())) {
-            options.add("Extra Deck");
+            options.add(context.getString(R.string.extra_deck));
         } else {
-            options.add("Main Deck");
+            options.add(context.getString(R.string.main_deck));
         }
-        options.add("Side Deck");
+        options.add(context.getString(R.string.side_deck));
 
         new AlertDialog.Builder(context)
-                .setTitle("Adicionar em qual Deck?")
+                .setTitle(context.getString(R.string.add_to_deck_title))
                 .setItems(options.toArray(new String[0]), (dialog, which) -> {
                     String selectedOption = options.get(which);
                     String deckCollection;
-                    if (selectedOption.equals("Main Deck")) deckCollection = "mainDeck";
-                    else if (selectedOption.equals("Extra Deck")) deckCollection = "extraDeck";
+                    if (selectedOption.equals(context.getString(R.string.main_deck))) deckCollection = "mainDeck";
+                    else if (selectedOption.equals(context.getString(R.string.extra_deck))) deckCollection = "extraDeck";
                     else deckCollection = "sideDeck";
 
                     checkLimitAndAddToDeck(deckCollection, card, position);
@@ -109,11 +108,26 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
 
         deckRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.size() >= limit) {
-                Toast.makeText(context, "Limite do " + deckCollection + " (" + limit + " cartas) atingido!", Toast.LENGTH_LONG).show();
+                String deckName = getTranslatedDeckName(deckCollection);
+                Toast.makeText(context, context.getString(R.string.deck_limit_reached, limit, deckName), Toast.LENGTH_LONG).show();
             } else {
                 addToDeck(deckRef, card, position);
             }
         });
+    }
+
+    private String getTranslatedDeckName(String deckCollection) {
+        if (deckCollection == null) return "";
+        switch (deckCollection) {
+            case "mainDeck":
+                return context.getString(R.string.main_deck);
+            case "extraDeck":
+                return context.getString(R.string.extra_deck);
+            case "sideDeck":
+                return context.getString(R.string.side_deck);
+            default:
+                return deckCollection;
+        }
     }
 
     private int getDeckLimit(String deckCollection) {
@@ -128,8 +142,7 @@ public class CardSearchAdapter extends RecyclerView.Adapter<CardSearchAdapter.Ca
     private void addToDeck(CollectionReference deckRef, Card card, int position) {
         deckRef.document(String.valueOf(card.getId())).set(card)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(context, "Carta adicionada!", Toast.LENGTH_SHORT).show();
-                    // Atualiza o conjunto de IDs e notifica o adapter para redesenhar este item
+                    Toast.makeText(context, R.string.card_added_success, Toast.LENGTH_SHORT).show();
                     deckCardIds.add(card.getId());
                     notifyItemChanged(position);
                 });

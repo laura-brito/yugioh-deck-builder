@@ -58,9 +58,10 @@ public class ProfileActivity extends BaseActivity {
                 if (isGranted) {
                     launchCamera();
                 } else {
-                    Toast.makeText(this, "Permissão da câmera negada.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.camera_permission_denied, Toast.LENGTH_SHORT).show();
                 }
             });
+
 
     // Launcher para abrir a câmera
     private final ActivityResultLauncher<Uri> cameraLauncher =
@@ -84,7 +85,7 @@ public class ProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        setTitle(R.string.profile);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -110,8 +111,8 @@ public class ProfileActivity extends BaseActivity {
 
     private void initLanguageList() {
         languageList = new ArrayList<>();
-        languageList.add(new LanguageItem("English", "en", R.drawable.ic_flag_us));
-        languageList.add(new LanguageItem("Português", "pt", R.drawable.ic_flag_br));
+        languageList.add(new LanguageItem(getString(R.string.language_english), "en", R.drawable.ic_flag_us));
+        languageList.add(new LanguageItem(getString(R.string.language_portuguese), "pt", R.drawable.ic_flag_br));
     }
 
     private void updateLanguageSelectorUI() {
@@ -128,13 +129,13 @@ public class ProfileActivity extends BaseActivity {
     private void showLanguageSelectionDialog() {
         LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(this, languageList);
         new AlertDialog.Builder(this)
-                .setTitle("Selecione o Idioma")
+                .setTitle(getString(R.string.language_selection_title))
                 .setAdapter(adapter, (dialog, which) -> {
                     LanguageItem selectedLanguage = languageList.get(which);
                     String selectedLangCode = selectedLanguage.getLanguageCode();
                     if (!LocaleHelper.getLanguage(ProfileActivity.this).equals(selectedLangCode)) {
                         LocaleHelper.setLocale(ProfileActivity.this, selectedLangCode);
-                        recreate(); // Reinicia a activity para aplicar a mudança
+                        recreate();
                     }
                 })
                 .show();
@@ -142,9 +143,9 @@ public class ProfileActivity extends BaseActivity {
 
 
     private void showImageSourceDialog() {
-        String[] options = {"Tirar Foto", "Escolher da Galeria"};
+        final String[] options = {getString(R.string.dialog_option_camera), getString(R.string.dialog_option_gallery)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Escolha uma imagem");
+        builder.setTitle(getString(R.string.image_source_dialog_title));
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) { // Tirar Foto
                 checkCameraPermissionAndLaunch();

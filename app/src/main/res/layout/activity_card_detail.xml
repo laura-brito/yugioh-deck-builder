@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            tools:text="Adicionar ao Deck" />
+            tools:text="@string/add_to_deck_button" />
 
     </LinearLayout>
 </ScrollView>

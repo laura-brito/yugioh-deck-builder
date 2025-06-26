@@ -67,6 +67,7 @@ public class CardListActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_list);
+        setTitle(R.string.card_list);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,20 +141,21 @@ public class CardListActivity extends BaseActivity {
         });
     }
 
+
     private void setupTypeSelector() {
         typeSelectorCardView.setOnClickListener(v -> {
             final String[] cardTypes = getResources().getStringArray(R.array.card_types);
             new AlertDialog.Builder(this)
-                    .setTitle("Selecione o Tipo")
+                    .setTitle(getString(R.string.select_type_dialog_title))
                     .setItems(cardTypes, (dialog, which) -> {
                         String selectedType = cardTypes[which];
                         selectedTypeTextView.setText(selectedType);
-                        String currentQuery = searchView.getQuery().toString();
-                        fetchCards(selectedType, currentQuery);
+                        fetchCards(selectedType, searchView.getQuery().toString());
                     })
                     .show();
         });
     }
+
 
     private void fetchCards(String type, String fname) {
         // Mostra o loading
@@ -186,16 +188,18 @@ public class CardListActivity extends BaseActivity {
                 cardSearchAdapter.notifyDataSetChanged();
             }
 
+
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                progressBar.setVisibility(View.GONE); // Esconde o loading
+                progressBar.setVisibility(View.GONE);
                 cardList.clear();
                 toggleEmptySearchState(false);
                 cardSearchAdapter.notifyDataSetChanged();
-                Toast.makeText(CardListActivity.this, "Erro de rede: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(CardListActivity.this, getString(R.string.network_error, t.getMessage()), Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     private void toggleEmptySearchState(boolean hasData) {
         if (hasData) {
@@ -205,7 +209,7 @@ public class CardListActivity extends BaseActivity {
             recyclerViewCardSearch.setVisibility(View.GONE);
             emptySearchView.setVisibility(View.VISIBLE);
             TextView emptyText = emptySearchView.findViewById(R.id.text_view_empty_state);
-            emptyText.setText("Nenhuma carta encontrada.");
+            emptyText.setText(R.string.empty_search_message);
         }
     }
 
