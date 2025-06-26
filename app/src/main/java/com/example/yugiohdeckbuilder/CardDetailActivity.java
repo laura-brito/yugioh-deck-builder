@@ -29,7 +29,7 @@ public class CardDetailActivity extends BaseActivity {
     private Button addRemoveButton;
     private FirebaseFirestore db;
     private Card currentCard;
-    private String cardLocation = null; // mainDeck, extraDeck, sideDeck, ou null
+    private String cardLocation = null;
     private final String LOCAL_USER_ID = "localUser";
     private final List<String> EXTRA_DECK_TYPES = Arrays.asList(
             "Fusion Monster", "Link Monster", "Pendulum Effect Fusion Monster",
@@ -42,6 +42,8 @@ public class CardDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_detail);
 
+        setTitle(R.string.card_details);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -49,12 +51,12 @@ public class CardDetailActivity extends BaseActivity {
         db = FirebaseFirestore.getInstance();
         currentCard = (Card) getIntent().getSerializableExtra("CARD_DATA");
         if (currentCard == null) {
+            Toast.makeText(this, R.string.load_card_error, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         setupUI();
-        loadCardData();
         findCardLocation();
     }
 
@@ -82,10 +84,6 @@ public class CardDetailActivity extends BaseActivity {
         });
     }
 
-    private void loadCardData() {
-        // ... (já implementado em setupUI)
-    }
-
     private void findCardLocation() {
         Task<DocumentSnapshot> mainTask = db.collection("users").document(LOCAL_USER_ID).collection("mainDeck").document(String.valueOf(currentCard.getId())).get();
         Task<DocumentSnapshot> extraTask = db.collection("users").document(LOCAL_USER_ID).collection("extraDeck").document(String.valueOf(currentCard.getId())).get();
@@ -102,30 +100,44 @@ public class CardDetailActivity extends BaseActivity {
 
     private void updateButtonState() {
         if (cardLocation != null) {
-            addRemoveButton.setText("Remover do " + cardLocation);
+            String translatedDeckName = getTranslatedDeckName(cardLocation);
+            addRemoveButton.setText(getString(R.string.remove_from_deck_button, translatedDeckName));
         } else {
-            addRemoveButton.setText("Adicionar ao Deck");
+            addRemoveButton.setText(R.string.add_to_deck_button);
+        }
+    }
+
+    private String getTranslatedDeckName(String deckCollection) {
+        if (deckCollection == null) return "";
+        switch (deckCollection) {
+            case "mainDeck":
+                return getString(R.string.main_deck);
+            case "extraDeck":
+                return getString(R.string.extra_deck);
+            case "sideDeck":
+                return getString(R.string.side_deck);
+            default:
+                return deckCollection;
         }
     }
 
     private void showDeckSelectionDialog() {
         List<String> options = new ArrayList<>();
-        // Regra: Tipos específicos só podem ir no Extra Deck
         if (EXTRA_DECK_TYPES.contains(currentCard.getType())) {
-            options.add("Extra Deck");
+            options.add(getString(R.string.extra_deck));
         } else {
-            options.add("Main Deck");
+            options.add(getString(R.string.main_deck));
         }
-        options.add("Side Deck");
+        options.add(getString(R.string.side_deck));
 
         new AlertDialog.Builder(this)
-                .setTitle("Adicionar em qual Deck?")
+                .setTitle(R.string.add_to_deck_title)
                 .setItems(options.toArray(new String[0]), (dialog, which) -> {
                     String selectedOption = options.get(which);
-                    String deckCollection = "";
-                    if (selectedOption.equals("Main Deck")) deckCollection = "mainDeck";
-                    else if (selectedOption.equals("Extra Deck")) deckCollection = "extraDeck";
-                    else if (selectedOption.equals("Side Deck")) deckCollection = "sideDeck";
+                    String deckCollection;
+                    if (selectedOption.equals(getString(R.string.main_deck))) deckCollection = "mainDeck";
+                    else if (selectedOption.equals(getString(R.string.extra_deck))) deckCollection = "extraDeck";
+                    else deckCollection = "sideDeck";
 
                     checkLimitAndAddToDeck(deckCollection);
                 })
@@ -138,7 +150,8 @@ public class CardDetailActivity extends BaseActivity {
 
         deckRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.size() >= limit) {
-                Toast.makeText(this, "Limite do " + deckCollection + " (" + limit + " cartas) atingido!", Toast.LENGTH_LONG).show();
+                String deckName = getTranslatedDeckName(deckCollection);
+                Toast.makeText(this, getString(R.string.deck_limit_reached, limit, deckName), Toast.LENGTH_LONG).show();
             } else {
                 addToDeck(deckRef);
             }
@@ -157,7 +170,7 @@ public class CardDetailActivity extends BaseActivity {
     private void addToDeck(CollectionReference deckRef) {
         deckRef.document(String.valueOf(currentCard.getId())).set(currentCard)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Carta adicionada!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.card_added_success, Toast.LENGTH_SHORT).show();
                     cardLocation = deckRef.getId();
                     updateButtonState();
                 });
@@ -168,7 +181,7 @@ public class CardDetailActivity extends BaseActivity {
         db.collection("users").document(LOCAL_USER_ID).collection(cardLocation)
                 .document(String.valueOf(currentCard.getId())).delete()
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Carta removida!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.card_removed_success, Toast.LENGTH_SHORT).show();
                     cardLocation = null;
                     updateButtonState();
                 });

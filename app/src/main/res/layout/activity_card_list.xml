@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/colorBackground"
             app:iconifiedByDefault="false"
-            app:queryHint="Procurar por nome..." />
+            app:queryHint="@string/search_hint" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
