@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YGO Deck Builder</string>
+
+    <string name="email">Email</string>
+    <string name="password">Senha</string>
+    <string name="login">Entrar</string>
+    <string name="register">Cadastrar</string>
+    <string name="auth_failed">Falha na autenticação.</string>
+    <string name="reg_success">Cadastro realizado com sucesso.</string>
+    <string name="reg_failed">Falha ao cadastrar.</string>
+
+    <string name="add_new_card">Adicionar nova carta</string>
+    <string name="deck_card_image_desc">Carta do Deck</string>
+
+    <string name="add">Adicionar</string>
+    <string name="card_added_success">Carta adicionada com sucesso!</string>
+    <string name="card_add_failed">Falha ao adicionar a carta.</string>
+    <string name="search_card_image_desc">Arte da carta no resultado da busca</string>
+    <string name="card_list">Lista de cartas</string>
+    <string name="card_details">Detalhes da carta</string>
+
+    <string name="profile">Perfil</string>
+    <string name="profile_image_desc">Foto de perfil do usuário</string>
+    <string name="deck_summary_format">Resumo do Deck: %d cartas</string>
+    <string name="logout">Sair</string>
+
+    <string-array name="card_types">
+        <item>Monstro de Efeito</item>
+        <item>Monstro de Efeito de Virar</item>
+        <item>Monstro de Fusão</item>
+        <item>Monstro Link</item>
+        <item>Monstro Normal</item>
+        <item>Monstro Pêndulo de Efeito</item>
+        <item>Monstro de Ritual de Efeito</item>
+        <item>Carta de Magia</item>
+        <item>Monstro Sincro</item>
+        <item>Carta de Armadilha</item>
+        <item>Monstro XYZ</item>
+    </string-array>
+
+    <string name="language_selection_title">Idioma</string>
+    <string name="deck_header">Cabeçalho do Deck</string>
+    <string-array name="languages">
+        <item>Inglês</item>
+        <item>Português</item>
+    </string-array>
+</resources>
